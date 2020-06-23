@@ -1,0 +1,33 @@
+C:\Users\ender\source\repos\Ejemplo1\Ejemplo1\bin\Debug\Ejemplo1.exe.config
+C:\Users\ender\source\repos\Ejemplo1\Ejemplo1\bin\Debug\Ejemplo1.exe
+C:\Users\ender\source\repos\Ejemplo1\Ejemplo1\bin\Debug\Ejemplo1.pdb
+C:\Users\ender\source\repos\Ejemplo1\Ejemplo1\bin\Debug\dll_prueba.dll
+C:\Users\ender\source\repos\Ejemplo1\Ejemplo1\bin\Debug\dll_prueba.pdb
+C:\Users\ender\source\repos\Ejemplo1\Ejemplo1\obj\Debug\Ejemplo1.csprojAssemblyReference.cache
+C:\Users\ender\source\repos\Ejemplo1\Ejemplo1\obj\Debug\Ejemplo1.Form1.resources
+C:\Users\ender\source\repos\Ejemplo1\Ejemplo1\obj\Debug\Ejemplo1.Properties.Resources.resources
+C:\Users\ender\source\repos\Ejemplo1\Ejemplo1\obj\Debug\Ejemplo1.csproj.GenerateResource.cache
+C:\Users\ender\source\repos\Ejemplo1\Ejemplo1\obj\Debug\Ejemplo1.csproj.CoreCompileInputs.cache
+C:\Users\ender\source\repos\Ejemplo1\Ejemplo1\obj\Debug\Ejemplo1.csproj.CopyComplete
+C:\Users\ender\source\repos\Ejemplo1\Ejemplo1\obj\Debug\Ejemplo1.exe
+C:\Users\ender\source\repos\Ejemplo1\Ejemplo1\obj\Debug\Ejemplo1.pdb
+C:\Users\Guillermo\Desktop\Universidad\Microprocesadores\micros II lenguaje C y maquinas de estado\repos\Ejemplo1\Ejemplo1\bin\Debug\Ejemplo1.exe.config
+C:\Users\Guillermo\Desktop\Universidad\Microprocesadores\micros II lenguaje C y maquinas de estado\repos\Ejemplo1\Ejemplo1\bin\Debug\Ejemplo1.exe
+C:\Users\Guillermo\Desktop\Universidad\Microprocesadores\micros II lenguaje C y maquinas de estado\repos\Ejemplo1\Ejemplo1\bin\Debug\Ejemplo1.pdb
+C:\Users\Guillermo\Desktop\Universidad\Microprocesadores\micros II lenguaje C y maquinas de estado\repos\Ejemplo1\Ejemplo1\bin\Debug\dll_prueba.dll
+C:\Users\Guillermo\Desktop\Universidad\Microprocesadores\micros II lenguaje C y maquinas de estado\repos\Ejemplo1\Ejemplo1\bin\Debug\dll_prueba.pdb
+C:\Users\Guillermo\Desktop\Universidad\Microprocesadores\micros II lenguaje C y maquinas de estado\repos\Ejemplo1\Ejemplo1\obj\Debug\Ejemplo1.csprojAssemblyReference.cache
+C:\Users\Guillermo\Desktop\Universidad\Microprocesadores\micros II lenguaje C y maquinas de estado\repos\Ejemplo1\Ejemplo1\obj\Debug\Ejemplo1.Form1.resources
+C:\Users\Guillermo\Desktop\Universidad\Microprocesadores\micros II lenguaje C y maquinas de estado\repos\Ejemplo1\Ejemplo1\obj\Debug\Ejemplo1.Properties.Resources.resources
+C:\Users\Guillermo\Desktop\Universidad\Microprocesadores\micros II lenguaje C y maquinas de estado\repos\Ejemplo1\Ejemplo1\obj\Debug\Ejemplo1.csproj.GenerateResource.cache
+C:\Users\Guillermo\Desktop\Universidad\Microprocesadores\micros II lenguaje C y maquinas de estado\repos\Ejemplo1\Ejemplo1\obj\Debug\Ejemplo1.csproj.CoreCompileInputs.cache
+C:\Users\Guillermo\Desktop\Universidad\Microprocesadores\micros II lenguaje C y maquinas de estado\repos\Ejemplo1\Ejemplo1\obj\Debug\Ejemplo1.csproj.CopyComplete
+C:\Users\Guillermo\Desktop\Universidad\Microprocesadores\micros II lenguaje C y maquinas de estado\repos\Ejemplo1\Ejemplo1\obj\Debug\Ejemplo1.exe
+C:\Users\Guillermo\Desktop\Universidad\Microprocesadores\micros II lenguaje C y maquinas de estado\repos\Ejemplo1\Ejemplo1\obj\Debug\Ejemplo1.pdb
+C:\Users\Guillermo\Desktop\Universidad\Microprocesadores\micros II lenguaje C y maquinas de estado\repos\Proyecto2-AppToComunicateMicrocontrollerWithPC\Ejemplo1\obj\Debug\Ejemplo1.csprojAssemblyReference.cache
+C:\Users\Guillermo\Desktop\Universidad\Microprocesadores\micros II lenguaje C y maquinas de estado\repos\Proyecto2-AppToComunicateMicrocontrollerWithPC\Ejemplo1\obj\Debug\Ejemplo1.Form1.resources
+C:\Users\Guillermo\Desktop\Universidad\Microprocesadores\micros II lenguaje C y maquinas de estado\repos\Proyecto2-AppToComunicateMicrocontrollerWithPC\Ejemplo1\obj\Debug\Ejemplo1.Properties.Resources.resources
+C:\Users\Guillermo\Desktop\Universidad\Microprocesadores\micros II lenguaje C y maquinas de estado\repos\Proyecto2-AppToComunicateMicrocontrollerWithPC\Ejemplo1\obj\Debug\Ejemplo1.csproj.GenerateResource.cache
+C:\Users\Guillermo\Desktop\Universidad\Microprocesadores\micros II lenguaje C y maquinas de estado\repos\Proyecto2-AppToComunicateMicrocontrollerWithPC\Ejemplo1\obj\Debug\Ejemplo1.csproj.CoreCompileInputs.cache
+C:\Users\Guillermo\Desktop\Universidad\Microprocesadores\micros II lenguaje C y maquinas de estado\repos\Proyecto2-AppToComunicateMicrocontrollerWithPC\Ejemplo1\obj\Debug\Ejemplo1.exe
+C:\Users\Guillermo\Desktop\Universidad\Microprocesadores\micros II lenguaje C y maquinas de estado\repos\Proyecto2-AppToComunicateMicrocontrollerWithPC\Ejemplo1\obj\Debug\Ejemplo1.pdb
