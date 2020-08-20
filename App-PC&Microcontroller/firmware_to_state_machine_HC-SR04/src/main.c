@@ -76,8 +76,17 @@ void ultrasonicTimer_Init(){
   ultrasonicTimerInstance.Init.Period = PERIOD_ULTRA;  //T = (1/ftimer)(period + 1)
   ultrasonicTimerInstance.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   ultrasonicTimerInstance.Init.RepetitionCounter = 0;
-  HAL_TIM_Base_Init(&ultrasonicTimerInstance);
-  HAL_TIM_Base_Start_IT(&ultrasonicTimerInstance);
+  // HAL_TIM_Base_Init(&ultrasonicTimerInstance);
+  // HAL_TIM_Base_Start_IT(&ultrasonicTimerInstance);
+  HAL_TIM_IC_Init(&ultrasonicTimerInstance);
+  ultrasonicIC.SlaveMode = TIM_SLAVEMODE_RESET;
+  ultrasonicIC.InputTrigger = TIM_TS_TI2FP2;
+  ultrasonicIC.TriggerPrescaler = TIM_TRIGGERPRESCALER_DIV1;
+  ultrasonicIC.TriggerPolarity = TIM_TRIGGERPOLARITY_BOTHEDGE;
+  ultrasonicIC.TriggerFilter = 0x0;
+  
+
+
 }
 
 void TIM2_IRQHandler(){
@@ -143,7 +152,7 @@ int main()
   uart_Init();
   timer_Init();
   ultrasonicTimer_Init();
-
+  
   //Interrupts enable
   HAL_NVIC_SetPriority(TIM2_IRQn,0,0); // Set Interrupt priority
   HAL_NVIC_EnableIRQ(TIM2_IRQn);      // Enable interrupt by timer 2
@@ -174,7 +183,6 @@ int main()
         highLevelEchoTime++;
       }
       if(highLevelEchoTime>0 && HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_1) == 0){
-        highLevelEchoTime = highLevelEchoTime - 1;
         distance = (0.00002*highLevelEchoTime*34300)/2; // distance calculus
         char distanceString[32]; // 32 is the Number of bytes in a float
         gcvt(distance, 6, distanceString); // convert float to string with len equal 6

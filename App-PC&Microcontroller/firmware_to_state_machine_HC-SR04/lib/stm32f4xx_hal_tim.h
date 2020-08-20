@@ -254,7 +254,7 @@ typedef struct {
                                   This parameter can be a value of @ref TIM_Trigger_Prescaler */
   uint32_t  TriggerFilter;     /*!< Input trigger filter 
                                   This parameter can be a number between Min_Data = 0x0 and Max_Data = 0xF */  
-
+ 
 }TIM_SlaveConfigTypeDef;
 
 /** 

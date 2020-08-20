@@ -16,18 +16,27 @@ namespace Interface_To_Probe_Comunication
         public Form1()
         {
             InitializeComponent();
-            obtenerpuertos();
+            var a = true;
+            //String[] puertos = SerialPort.GetPortNames();
+            //var a = ints1.All(ints2.Contains) && ints1.Count == ints2.Count;
+            //var c = !SerialPort.GetPortNames().Contains(comboBox1.Text);
+            comboBox1.Click += async (sender, e) =>
+            {
+                await ClickMethodAsync();
+                Console.WriteLine("\r\nPuertos actualizados\n");
+            };
         }
 
-        void obtenerpuertos()
+        private async Task ClickMethodAsync()
         {
+            comboBox1.Items.Clear();
             String[] puertos = SerialPort.GetPortNames();
             comboBox1.Items.AddRange(puertos);
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+          
         }
 
         private void Label1_Click(object sender, EventArgs e)
@@ -94,7 +103,8 @@ namespace Interface_To_Probe_Comunication
 
 
         }
-        
+
+
         private void ComboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
