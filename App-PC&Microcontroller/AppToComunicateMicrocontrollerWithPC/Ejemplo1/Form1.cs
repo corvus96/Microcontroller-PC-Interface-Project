@@ -94,13 +94,16 @@ namespace Interface_To_Probe_Comunication
             }
             catch (ArgumentException)
             {
-
+                MessageBox.Show("El puerto no comienza con COM o el tipo de archivo en el puerto no es soportado");
             }
             catch (FormatException)
             {
                 MessageBox.Show("Es necesario que especifique todos los datos, para abrir el puerto");
             }
-
+            catch (System.IO.IOException)
+            {
+                MessageBox.Show("Por favor revise los puertos nuevamente");
+            }
 
         }
 
