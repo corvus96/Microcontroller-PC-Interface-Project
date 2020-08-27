@@ -16,10 +16,9 @@ namespace Interface_To_Probe_Comunication
         public Form1()
         {
             InitializeComponent();
-            var a = true;
-            //String[] puertos = SerialPort.GetPortNames();
-            //var a = ints1.All(ints2.Contains) && ints1.Count == ints2.Count;
-            //var c = !SerialPort.GetPortNames().Contains(comboBox1.Text);
+            /* Este evento se activa de forma asincronica en segundo plano cuando
+            se da un click en combobox, por lo que una vez que ocurra el evento,
+            escribira en consola el mensaje*/
             comboBox1.Click += async (sender, e) =>
             {
                 await ClickMethodAsync();
@@ -102,6 +101,7 @@ namespace Interface_To_Probe_Comunication
             }
             catch (System.IO.IOException)
             {
+                comboBox1.Text = "";
                 MessageBox.Show("Por favor revise los puertos nuevamente");
             }
 
