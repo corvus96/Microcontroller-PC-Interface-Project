@@ -60,17 +60,19 @@ namespace App_with_image_processing
             {
                 if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 {
+                    // se almacena el PATH de la imagen seleccionada en "imagen"
                     string imagen = openFileDialog1.FileName;
-                    //Read the contents of the file into a stream
                     var imagenBinary = openFileDialog1.OpenFile();
+                    // Se crea el objeto para leer bit a bit el archivo
                     BinaryReader reader = new BinaryReader(imagenBinary);
+                    // se ejecuta el metodo que devuelve un diccionario con los datos de la cabecera
                     Dictionary<string, string> headerData = GetImageHeaderData(reader, imagen);
+                    // Se imprime en consola la data extraida
                     foreach (KeyValuePair<string, string> kvp in headerData)
                     {
                         Console.WriteLine("{0} : {1}",
                             kvp.Key, kvp.Value);
                     }
-                    
                     pictureBox1.Image = Image.FromFile(imagen);
                 }
             }
