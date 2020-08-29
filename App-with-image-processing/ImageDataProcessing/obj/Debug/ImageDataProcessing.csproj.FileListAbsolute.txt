@@ -1,0 +1,6 @@
+C:\Users\Guillermo\Desktop\PROYECTOS\D. arduino y platformio\Proyectos-STM32F446RE\App-with-image-processing\ImageDataProcessing\bin\Debug\ImageDataProcessing.dll
+C:\Users\Guillermo\Desktop\PROYECTOS\D. arduino y platformio\Proyectos-STM32F446RE\App-with-image-processing\ImageDataProcessing\bin\Debug\ImageDataProcessing.pdb
+C:\Users\Guillermo\Desktop\PROYECTOS\D. arduino y platformio\Proyectos-STM32F446RE\App-with-image-processing\ImageDataProcessing\obj\Debug\ImageDataProcessing.csprojAssemblyReference.cache
+C:\Users\Guillermo\Desktop\PROYECTOS\D. arduino y platformio\Proyectos-STM32F446RE\App-with-image-processing\ImageDataProcessing\obj\Debug\ImageDataProcessing.csproj.CoreCompileInputs.cache
+C:\Users\Guillermo\Desktop\PROYECTOS\D. arduino y platformio\Proyectos-STM32F446RE\App-with-image-processing\ImageDataProcessing\obj\Debug\ImageDataProcessing.dll
+C:\Users\Guillermo\Desktop\PROYECTOS\D. arduino y platformio\Proyectos-STM32F446RE\App-with-image-processing\ImageDataProcessing\obj\Debug\ImageDataProcessing.pdb

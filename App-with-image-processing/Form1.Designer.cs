@@ -32,21 +32,24 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.button2 = new System.Windows.Forms.Button();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.button3 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
             // 
+            this.pictureBox1.BackColor = System.Drawing.Color.LightSteelBlue;
             this.pictureBox1.Location = new System.Drawing.Point(203, 40);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(515, 282);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.PictureBox1_Click);
             // 
             // label1
             // 
@@ -71,24 +74,6 @@
             this.button1.Text = "Corregir Columnas";
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.Button1_Click);
-            // 
-            // progressBar1
-            // 
-            this.progressBar1.Location = new System.Drawing.Point(479, 355);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(239, 50);
-            this.progressBar1.TabIndex = 5;
-            // 
-            // button2
-            // 
-            this.button2.BackColor = System.Drawing.Color.SlateGray;
-            this.button2.ForeColor = System.Drawing.SystemColors.Window;
-            this.button2.Location = new System.Drawing.Point(203, 355);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(243, 50);
-            this.button2.TabIndex = 6;
-            this.button2.Text = "Seleccionar Imagen";
-            this.button2.UseVisualStyleBackColor = false;
             // 
             // radioButton1
             // 
@@ -129,6 +114,22 @@
             this.button3.TabIndex = 9;
             this.button3.Text = "Guardar Imagen";
             this.button3.UseVisualStyleBackColor = false;
+            this.button3.Click += new System.EventHandler(this.Button3_Click);
+            // 
+            // button2
+            // 
+            this.button2.BackColor = System.Drawing.Color.CornflowerBlue;
+            this.button2.Location = new System.Drawing.Point(203, 355);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(520, 50);
+            this.button2.TabIndex = 10;
+            this.button2.Text = "Seleccionar Imagen";
+            this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.Button2_Click_1);
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
             // 
             // Form1
             // 
@@ -137,15 +138,13 @@
             this.BackColor = System.Drawing.Color.SeaShell;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(933, 554);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.radioButton2);
             this.Controls.Add(this.radioButton1);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox1);
-            this.Enabled = false;
             this.Font = new System.Drawing.Font("Lemon/Milk", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "Form1";
@@ -162,11 +161,11 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.ProgressBar progressBar1;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }
 
