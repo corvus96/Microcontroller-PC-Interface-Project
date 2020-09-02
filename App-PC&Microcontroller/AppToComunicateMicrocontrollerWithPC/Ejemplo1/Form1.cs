@@ -75,8 +75,6 @@ namespace Interface_To_Probe_Comunication
             {
                 serialPort1.PortName = comboBox1.Text;
                 serialPort1.BaudRate = Convert.ToInt32(comboBox2.Text);
-                serialPort1.PortName = comboBox1.Text;
-                serialPort1.BaudRate = Convert.ToInt32(comboBox2.Text);
                 serialPort1.Open();
                 progressBar1.Value = 100;
                 button1.Enabled = false;
