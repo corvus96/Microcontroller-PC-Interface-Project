@@ -1,7 +1,6 @@
 C:\Users\Guillermo\Desktop\PROYECTOS\D. arduino y platformio\Proyectos-STM32F446RE\App-with-image-processing\bin\Debug\App-with-image-processing.exe.config
 C:\Users\Guillermo\Desktop\PROYECTOS\D. arduino y platformio\Proyectos-STM32F446RE\App-with-image-processing\bin\Debug\App-with-image-processing.exe
 C:\Users\Guillermo\Desktop\PROYECTOS\D. arduino y platformio\Proyectos-STM32F446RE\App-with-image-processing\bin\Debug\App-with-image-processing.pdb
-C:\Users\Guillermo\Desktop\PROYECTOS\D. arduino y platformio\Proyectos-STM32F446RE\App-with-image-processing\obj\Debug\App_with_image_processing.Form1.resources
 C:\Users\Guillermo\Desktop\PROYECTOS\D. arduino y platformio\Proyectos-STM32F446RE\App-with-image-processing\obj\Debug\App_with_image_processing.Properties.Resources.resources
 C:\Users\Guillermo\Desktop\PROYECTOS\D. arduino y platformio\Proyectos-STM32F446RE\App-with-image-processing\obj\Debug\App-with-image-processing.csproj.GenerateResource.cache
 C:\Users\Guillermo\Desktop\PROYECTOS\D. arduino y platformio\Proyectos-STM32F446RE\App-with-image-processing\obj\Debug\App-with-image-processing.csproj.CoreCompileInputs.cache
@@ -11,3 +10,4 @@ C:\Users\Guillermo\Desktop\PROYECTOS\D. arduino y platformio\Proyectos-STM32F446
 C:\Users\Guillermo\Desktop\PROYECTOS\D. arduino y platformio\Proyectos-STM32F446RE\App-with-image-processing\bin\Debug\ImageDataProcessing.dll
 C:\Users\Guillermo\Desktop\PROYECTOS\D. arduino y platformio\Proyectos-STM32F446RE\App-with-image-processing\bin\Debug\ImageDataProcessing.pdb
 C:\Users\Guillermo\Desktop\PROYECTOS\D. arduino y platformio\Proyectos-STM32F446RE\App-with-image-processing\obj\Debug\App-with-image-processing.csproj.CopyComplete
+C:\Users\Guillermo\Desktop\PROYECTOS\D. arduino y platformio\Proyectos-STM32F446RE\App-with-image-processing\obj\Debug\App_with_image_processing.Form1.resources

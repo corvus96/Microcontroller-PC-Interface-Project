@@ -138,12 +138,12 @@ namespace ImageDataProcessing
             Dictionary<string, string> headerAssembly = new Dictionary<string, string>();
             
             Bitmap imgBit = new Bitmap(imagen);
-            headerAssembly.Add("Formato de Pixel", imgBit.PixelFormat.ToString());
-            headerAssembly.Add("Ancho", imgBit.Width.ToString());
-            headerAssembly.Add("Alto", imgBit.Height.ToString());
-            headerAssembly.Add("Tamaño de la imagen", (imgBit.Width * imgBit.Height).ToString());
-            headerAssembly.Add("Resolución horizontal", imgBit.HorizontalResolution.ToString());
-            headerAssembly.Add("Resolución vertical", imgBit.VerticalResolution.ToString());
+            headerAssembly.Add("Formato de Pixel (Bitmap)", imgBit.PixelFormat.ToString());
+            headerAssembly.Add("Ancho (Bitmap)", imgBit.Width.ToString());
+            headerAssembly.Add("Alto (Bitmap)", imgBit.Height.ToString());
+            headerAssembly.Add("Tamaño de la imagen (Bitmap)", (imgBit.Width * imgBit.Height).ToString());
+            headerAssembly.Add("Resolución horizontal (Bitmap)", imgBit.HorizontalResolution.ToString());
+            headerAssembly.Add("Resolución vertical (Bitmap)", imgBit.VerticalResolution.ToString());
             return headerAssembly;
         }
     }
