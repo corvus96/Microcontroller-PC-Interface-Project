@@ -156,6 +156,12 @@ namespace App_with_image_processing
                 byte[] ba = Encoding.Default.GetBytes(text);
                 hexString = BitConverter.ToString(ba).Replace("-", string.Empty);
             }
+            catch (OverflowException)
+            {
+                MessageBox.Show("Cuidado, Ha alcanzado el limite en ancho o alto");
+                int intValue = Int32.MaxValue;
+                hexString = intValue.ToString("X2");
+            }
             
             return hexString;
         }
@@ -264,14 +270,32 @@ namespace App_with_image_processing
 
         private void TextBox2_TextChanged(object sender, EventArgs e)
         {
-            //HERE
+            //Se modifica la cabecera cuando se cambie este campo
             Dictionary<string, string> headerData = SharedData.Instance.headerData;
-            Console.WriteLine(headerData["Formato de Pixel (Bitmap)"]);
+            headerData["Alto (Bitmap)"] = textBox2.Text;
+            textBox4.Text = "";
+            foreach (KeyValuePair<string, string> kvp in headerData)
+            {
+                if (kvp.Key.Contains("(Bitmap)") && !kvp.Key.Contains("Resolución") && !kvp.Key.Contains("Formato"))
+                {
+                    textBox4.Text += StringToHexString(kvp.Value);
+                }
+            }
         }
 
         private void TextBox3_TextChanged(object sender, EventArgs e)
         {
-
+            //Se modifica la cabecera cuando se cambie este campo
+            Dictionary<string, string> headerData = SharedData.Instance.headerData;
+            headerData["Ancho (Bitmap)"] = textBox3.Text;
+            textBox4.Text = "";
+            foreach (KeyValuePair<string, string> kvp in headerData)
+            {
+                if (kvp.Key.Contains("(Bitmap)") && !kvp.Key.Contains("Resolución") && !kvp.Key.Contains("Formato"))
+                {
+                    textBox4.Text += StringToHexString(kvp.Value);
+                }
+            }
         }
 
         private void Button7_Click(object sender, EventArgs e)
