@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using System.IO;
 using ImageDataProcessing;
 using System.IO.Ports;
-
+using System.Text.RegularExpressions;
 namespace App_with_image_processing
 {
     
@@ -88,8 +88,11 @@ namespace App_with_image_processing
                     BinaryReader reader = new BinaryReader(imagenBinary);
                     // se ejecuta el metodo que devuelve un diccionario con los datos de la cabecera
                     Dictionary<string, string> headerData = GetImageHeaderData(reader, imagen);
-                    // Se guardan los datos de la cabecera en una variable global para utilizarse en otro clase o evento
+                    // Se guardan los datos de la cabecera en una variable global para utilizarse en otra clase o evento
                     SharedData.Instance.headerData = headerData;
+                    // Se guardan los datos de la imagen en una variable global para utilizarse en otra clase o evento
+                    Bitmap bmp = new Bitmap(imagen);
+                    SharedData.Instance.imageData = bmp;
                     // Se imprime en consola la data extraida
                     Console.WriteLine("Metadatos de la imagen elegida");
                     foreach (KeyValuePair<string, string> kvp in headerData)
@@ -98,7 +101,7 @@ namespace App_with_image_processing
                             kvp.Key, kvp.Value);
                     }
                     textBox1.Text = imagen;
-                    pictureBox1.Image = Image.FromFile(imagen);
+                    pictureBox1.Image = bmp;
                     comboBox3.Enabled = true;
                     // Se actualiza el ancho
                     textBox3.Enabled = true;
@@ -121,8 +124,9 @@ namespace App_with_image_processing
                         {
                             textBox4.Text += StringToHexString(kvp.Value);
                         }
+                        
                     }
-
+                    PlaceFormat(headerData["Formato de Pixel (Bitmap)"]);
                 }
             }
             catch (ArgumentException)
@@ -134,7 +138,33 @@ namespace App_with_image_processing
                 MessageBox.Show("El archivo seleccionado no es un tipo de imagen válido");
             }
         }
+        private Bitmap NormalizeInputBitmap(Bitmap bmp)
+        {
+            // Esta función es necesaria debido a que los bitmaps modifican el RGB a BGR
+            //Conversion a mapa de bits en 'data'
+            System.Drawing.Imaging.BitmapData imageData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height),
+                                                        System.Drawing.Imaging.ImageLockMode.ReadWrite, bmp.PixelFormat);
+            // Tamaño del bitmap
+            int length = Math.Abs(imageData.Stride) * bmp.Height;
+            // Obtener la dirección de la primera linea
+            IntPtr ptr = imageData.Scan0;
+            byte[] rgbValues = new byte[length];
+            // Se copian los valores RGB en un array
+            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
+            // Transponemos R -> B y B -> R
+            for (int counter = 0; counter < rgbValues.Length; counter += 3)
+            {
+                byte dummy = rgbValues[counter];
+                rgbValues[counter] = rgbValues[counter + 2];
+                rgbValues[counter + 2] = dummy;
+            }
+            // Copiamos los valores RGB transpuestos en el bitmap
+            System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
 
+            // Unlock the bits.
+            bmp.UnlockBits(imageData);
+            return bmp;
+        }
         private string StringToHexString(string text)
         {
             /* Mediante un protocolo propio la cabecera a enviar debe ser
@@ -180,6 +210,34 @@ namespace App_with_image_processing
             IFrameHeaderFormatStrategy strategy = context.GetStrategy(reader);
             return context.ApplyStrategy(strategy, reader, imagen);
         }
+        // Esto función encapsula la asignación del combobox dependiendo del formato de la imagen
+        private void PlaceFormat(string format)
+        {
+            if(format.ToLower().Contains("rgb"))
+            {
+                comboBox3.Text = comboBox3.Items[0].ToString();
+            }
+            else if (format.ToLower().Contains("rbg"))
+            {
+                comboBox3.Text = comboBox3.Items[1].ToString();
+            }
+            else if (format.ToLower().Contains("bgr"))
+            {
+                comboBox3.Text = comboBox3.Items[2].ToString();
+            }
+            else if (format.ToLower().Contains("brg"))
+            {
+                comboBox3.Text = comboBox3.Items[3].ToString();
+            }
+            else if (format.ToLower().Contains("gbr"))
+            {
+                comboBox3.Text = comboBox3.Items[4].ToString();
+            }
+            else if (format.ToLower().Contains("grb"))
+            {
+                comboBox3.Text = comboBox3.Items[5].ToString();
+            }
+        }
 
         private void Button3_Click(object sender, EventArgs e)
         {
@@ -198,7 +256,75 @@ namespace App_with_image_processing
 
         private void ComboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
+            Dictionary<string, string> headerData = SharedData.Instance.headerData;
+            Bitmap bmp = SharedData.Instance.imageData;
+            if (comboBox3.Text == "RGB")
+            {
+                Bitmap newOrder = new PixelRGB().Transpose(bmp, headerData["Formato de Pixel (Bitmap)"]);
+                pictureBox1.Image = newOrder;
+                headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"],
+                                                            "(Rbg|Bgr|Brg|Gbr|Grb)", "Rgb");
+                Console.WriteLine("Formato de pixeles fijado en: " + headerData["Formato de Pixel (Bitmap)"]);
+                // Se guardan los cambios en la variable global
+                SharedData.Instance.imageData = newOrder;
+                SharedData.Instance.headerData = headerData;
 
+            }
+            else if (comboBox3.Text == "RBG")
+            {
+                Bitmap newOrder = new PixelRBG().Transpose(bmp, headerData["Formato de Pixel (Bitmap)"]);
+                pictureBox1.Image = newOrder;
+                headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"], 
+                                                            "(Rgb|Bgr|Brg|Gbr|Grb)", "Rbg");
+                Console.WriteLine("Formato de pixeles fijado en: " + headerData["Formato de Pixel (Bitmap)"]);
+                // Se guardan los cambios en la variable global
+                SharedData.Instance.imageData = newOrder;
+                SharedData.Instance.headerData = headerData;
+            }
+            else if (comboBox3.Text == "BGR")
+            {
+                Bitmap newOrder = new PixelBGR().Transpose(bmp, headerData["Formato de Pixel (Bitmap)"]);
+                pictureBox1.Image = newOrder;
+                headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"], 
+                                                            "(Rgb|Rbg|Brg|Gbr|Grb)", "Bgr");
+                Console.WriteLine("Formato de pixeles fijado en: " + headerData["Formato de Pixel (Bitmap)"]);
+                // Se guardan los cambios en la variable global
+                SharedData.Instance.imageData = newOrder;
+                SharedData.Instance.headerData = headerData;
+            }
+            else if (comboBox3.Text == "BRG")
+            {
+                Bitmap newOrder = new PixelBRG().Transpose(bmp, headerData["Formato de Pixel (Bitmap)"]);
+                pictureBox1.Image = newOrder;
+                headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"], 
+                                                            "(Rgb|Rbg|Bgr|Gbr|Grb)", "Brg");
+                Console.WriteLine("Formato de pixeles fijado en: " + headerData["Formato de Pixel (Bitmap)"]);
+                // Se guardan los cambios en la variable global
+                SharedData.Instance.imageData = newOrder;
+                SharedData.Instance.headerData = headerData;
+            }
+            else if (comboBox3.Text == "GBR")
+            {
+                Bitmap newOrder = new PixelGBR().Transpose(bmp, headerData["Formato de Pixel (Bitmap)"]);
+                pictureBox1.Image = newOrder;
+                headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"], 
+                                                            "(Rgb|Rbg|Bgr|Brg|Grb)", "Gbr");
+                Console.WriteLine("Formato de pixeles fijado en: " + headerData["Formato de Pixel (Bitmap)"]);
+                // Se guardan los cambios en la variable global
+                SharedData.Instance.imageData = newOrder;
+                SharedData.Instance.headerData = headerData;
+            }
+            else if (comboBox3.Text == "GRB")
+            {
+                Bitmap newOrder = new PixelGRB().Transpose(bmp, headerData["Formato de Pixel (Bitmap)"]);
+                pictureBox1.Image = newOrder;
+                headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"], 
+                                                            "(Rgb|Rbg|Bgr|Brg|Gbr)", "Grb");
+                Console.WriteLine("Formato de pixeles fijado en: " + headerData["Formato de Pixel (Bitmap)"]);
+                // Se guardan los cambios en la variable global
+                SharedData.Instance.imageData = newOrder;
+                SharedData.Instance.headerData = headerData;
+            }
         }
 
         private void Button6_Click(object sender, EventArgs e)
@@ -329,14 +455,36 @@ namespace App_with_image_processing
 
                 }
                 string arreglo = BitConverter.ToString(bytes1);
+
+                // Se toma el bitmap anteriormente creado, 
+                // para no crear una y otra vez bitmaps y compartir las modificaciones.
+                Bitmap bmp = SharedData.Instance.imageData;
+                //Conversion a mapa de bits en 'data'
+                System.Drawing.Imaging.BitmapData imageData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height),
+                                                            System.Drawing.Imaging.ImageLockMode.ReadWrite, bmp.PixelFormat);
+                // Tamaño del bitmap
+                int length = Math.Abs(imageData.Stride) * bmp.Height;
+                // Obtener la dirección de la primera linea
+                IntPtr ptr = imageData.Scan0;
+                byte[] rgbValues = new byte[length];
+                // Se copian los valores RGB en un array
+                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
+                // Copiamos los valores rgb de nuevo en el bitmap
+                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
+
+                // Unlock the bits.
+                bmp.UnlockBits(imageData);
+                pictureBox1.Image = bmp;
+
                 WriteLineInRichTextBox1("---> Se ha construido la imagen con la cabecera:", Color.Blue);
                 WriteLineInRichTextBox1(arreglo, Color.Blue);
+                string imagen1 = BitConverter.ToString(rgbValues).Replace("-", string.Empty);
+                Console.WriteLine("La imagen enviada fue:\n" + imagen1);
             }
             catch(ArgumentException)
             {
                 MessageBox.Show("Por favor ingrese una cabecera en formato hexadecimal valida");
             }
-
             
         }
 

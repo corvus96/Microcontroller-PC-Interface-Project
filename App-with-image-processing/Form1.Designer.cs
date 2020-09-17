@@ -329,6 +329,13 @@
             // 
             this.comboBox3.Enabled = false;
             this.comboBox3.FormattingEnabled = true;
+            this.comboBox3.Items.AddRange(new object[] {
+            "RGB",
+            "RBG",
+            "BGR",
+            "BRG",
+            "GBR",
+            "GRB"});
             this.comboBox3.Location = new System.Drawing.Point(245, 124);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(82, 24);
