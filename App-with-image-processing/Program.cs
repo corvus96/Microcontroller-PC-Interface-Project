@@ -46,5 +46,6 @@ namespace App_with_image_processing
         // Aquí se encuentran las variables globales
         public Dictionary<string, string> headerData { get; set; }
         public Bitmap imageData { get; set; }
+        public Image imagePath { get; set; }
     }
 }

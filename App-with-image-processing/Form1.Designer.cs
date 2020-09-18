@@ -62,6 +62,8 @@
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.label11 = new System.Windows.Forms.Label();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.button8 = new System.Windows.Forms.Button();
+            this.button10 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -398,6 +400,32 @@
             this.richTextBox1.Text = "";
             this.richTextBox1.TextChanged += new System.EventHandler(this.RichTextBox1_TextChanged);
             // 
+            // button8
+            // 
+            this.button8.BackColor = System.Drawing.Color.SlateGray;
+            this.button8.Enabled = false;
+            this.button8.ForeColor = System.Drawing.SystemColors.Window;
+            this.button8.Location = new System.Drawing.Point(362, 259);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(107, 43);
+            this.button8.TabIndex = 38;
+            this.button8.Text = "Flip Y";
+            this.button8.UseVisualStyleBackColor = false;
+            this.button8.Click += new System.EventHandler(this.Button8_Click);
+            // 
+            // button10
+            // 
+            this.button10.BackColor = System.Drawing.Color.SlateGray;
+            this.button10.Enabled = false;
+            this.button10.ForeColor = System.Drawing.SystemColors.Window;
+            this.button10.Location = new System.Drawing.Point(245, 210);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(107, 43);
+            this.button10.TabIndex = 39;
+            this.button10.Text = "Flip X";
+            this.button10.UseVisualStyleBackColor = false;
+            this.button10.Click += new System.EventHandler(this.Button10_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
@@ -405,6 +433,8 @@
             this.BackColor = System.Drawing.Color.SeaShell;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(933, 554);
+            this.Controls.Add(this.button10);
+            this.Controls.Add(this.button8);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.button9);
@@ -480,6 +510,8 @@
         private System.IO.Ports.SerialPort serialPort1;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button button10;
     }
 }
 

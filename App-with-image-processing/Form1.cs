@@ -11,6 +11,7 @@ using System.IO;
 using ImageDataProcessing;
 using System.IO.Ports;
 using System.Text.RegularExpressions;
+
 namespace App_with_image_processing
 {
     
@@ -93,6 +94,8 @@ namespace App_with_image_processing
                     // Se guardan los datos de la imagen en una variable global para utilizarse en otra clase o evento
                     Bitmap bmp = new Bitmap(imagen);
                     SharedData.Instance.imageData = bmp;
+                    Image image = Image.FromFile(imagen);
+                    SharedData.Instance.imagePath = image;
                     // Se imprime en consola la data extraida
                     Console.WriteLine("Metadatos de la imagen elegida");
                     foreach (KeyValuePair<string, string> kvp in headerData)
@@ -113,6 +116,8 @@ namespace App_with_image_processing
                     textBox4.Enabled = true;
                     button1.Enabled = true;
                     button7.Enabled = true;
+                    button8.Enabled = true;
+                    button10.Enabled = true;
                     // Se actualiza la cabecera de la trama limpiandola 
                     textBox4.Text = "";
                     // Se escribe en el log para realimentar con información al usuario
@@ -407,6 +412,15 @@ namespace App_with_image_processing
                     textBox4.Text += StringToHexString(kvp.Value);
                 }
             }
+            SharedData.Instance.headerData = headerData;
+            // Se ajustan las dimensiones de la imagen
+            Bitmap bmp = new Bitmap(SharedData.Instance.imagePath, 
+                Convert.ToInt32(headerData["Ancho (Bitmap)"]), 
+                Convert.ToInt32(headerData["Alto (Bitmap)"]));
+            bmp = SharedData.Instance.imageData;
+            Console.WriteLine("Las nuevas dimensiones son: (" + headerData["Ancho (Bitmap)"] + ","
+                                + headerData["Alto (Bitmap)"] + ")");
+
         }
 
         private void TextBox3_TextChanged(object sender, EventArgs e)
@@ -422,11 +436,27 @@ namespace App_with_image_processing
                     textBox4.Text += StringToHexString(kvp.Value);
                 }
             }
+            SharedData.Instance.headerData = headerData;
+            // Se ajustan las dimensiones de la imagen
+            Bitmap bmp = new Bitmap(SharedData.Instance.imagePath,
+                Convert.ToInt32(headerData["Ancho (Bitmap)"]),
+                Convert.ToInt32(headerData["Alto (Bitmap)"]));
+            bmp = SharedData.Instance.imageData;
+            Console.WriteLine("Las nuevas dimensiones son: (" + headerData["Ancho (Bitmap)"] + ","
+                                + headerData["Alto (Bitmap)"] + ")"); 
         }
 
         private void Button7_Click(object sender, EventArgs e)
         {
+            Bitmap bmp = SharedData.Instance.imageData;
+            Dictionary<string, string> headerData = SharedData.Instance.headerData;
 
+            bmp.RotateFlip(RotateFlipType.Rotate90FlipNone);
+            pictureBox1.Image = bmp;
+            headerData["Alto (Bitmap)"] = bmp.Height.ToString();
+            textBox2.Text = headerData["Alto (Bitmap)"];
+            headerData["Ancho (Bitmap)"] = bmp.Width.ToString();
+            textBox3.Text = headerData["Ancho (Bitmap)"];
         }
 
         private void TextBox4_TextChanged(object sender, EventArgs e)
@@ -492,6 +522,20 @@ namespace App_with_image_processing
         private void RichTextBox1_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void Button10_Click(object sender, EventArgs e)
+        {
+            Bitmap bmp = SharedData.Instance.imageData;
+            bmp.RotateFlip(RotateFlipType.RotateNoneFlipX);
+            pictureBox1.Image = bmp;
+        }
+
+        private void Button8_Click(object sender, EventArgs e)
+        {
+            Bitmap bmp = SharedData.Instance.imageData;
+            bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
+            pictureBox1.Image = bmp;
         }
     }
 }
