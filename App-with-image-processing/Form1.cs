@@ -251,7 +251,28 @@ namespace App_with_image_processing
 
         private void Button3_Click(object sender, EventArgs e)
         {
-
+            Bitmap bmp = SharedData.Instance.imageData;
+            Dictionary<string, string> headerData = SharedData.Instance.headerData;
+            // Se guarda la imagen 
+            SaveFileDialog dialog = new SaveFileDialog();
+            // Se filtran imagenes de tipo
+            dialog.Filter = "Image Files(*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*";
+            try
+            {
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    // Se ajusta la nueva imagen con ls cambios realizados
+                    Bitmap newImage = new Bitmap(bmp, Convert.ToInt32(headerData["Ancho (Bitmap)"]),
+                                                        Convert.ToInt32(headerData["Alto (Bitmap)"]));
+                    newImage.Save(dialog.FileName);
+                }
+                WriteLineInRichTextBox1("---> Se ha guardado la imagen en: " + dialog.FileName, Color.Blue);
+            }
+            catch (ArgumentNullException)
+            {
+                MessageBox.Show("Por favor ingrese un nombre");
+            }
+            
         }
 
         private void ComboBox2_SelectedIndexChanged(object sender, EventArgs e)
@@ -552,9 +573,15 @@ namespace App_with_image_processing
                 // Unlock the bits.
                 bmp.UnlockBits(imageData);
                 pictureBox1.Image = bmp;
-
                 WriteLineInRichTextBox1("---> Se ha construido la imagen con la cabecera:", Color.Blue);
                 WriteLineInRichTextBox1(arreglo, Color.Blue);
+                // Se activa el boton de envio en caso de que se encuentre conectado
+                if (serialPort1.IsOpen)
+                {
+                    button6.Enabled = true;
+                }
+                // Al crear la cabecera se habilita para guardar
+                button3.Enabled = true;
                 string imagen1 = BitConverter.ToString(rgbValues).Replace("-", string.Empty);
                 Console.WriteLine("La imagen enviada fue:\n" + imagen1);
             }
