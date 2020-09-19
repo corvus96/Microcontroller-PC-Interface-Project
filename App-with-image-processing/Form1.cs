@@ -403,47 +403,74 @@ namespace App_with_image_processing
         {
             //Se modifica la cabecera cuando se cambie este campo
             Dictionary<string, string> headerData = SharedData.Instance.headerData;
-            headerData["Alto (Bitmap)"] = textBox2.Text;
-            textBox4.Text = "";
-            foreach (KeyValuePair<string, string> kvp in headerData)
+            try
             {
-                if (kvp.Key.Contains("(Bitmap)") && !kvp.Key.Contains("Resolución") && !kvp.Key.Contains("Formato"))
+                if (Convert.ToInt32(textBox2.Text) < 100000) // Tamaño maximo de 100.000 
                 {
-                    textBox4.Text += StringToHexString(kvp.Value);
+                    headerData["Alto (Bitmap)"] = textBox2.Text;
+                    textBox4.Text = "";
+                    foreach (KeyValuePair<string, string> kvp in headerData)
+                    {
+                        if (kvp.Key.Contains("(Bitmap)") && !kvp.Key.Contains("Resolución") && !kvp.Key.Contains("Formato"))
+                        {
+                            textBox4.Text += StringToHexString(kvp.Value);
+                        }
+                    }
+                    Console.WriteLine("Las nuevas dimensiones son: (" + headerData["Ancho (Bitmap)"] + ","
+                                        + headerData["Alto (Bitmap)"] + ")");
+                    SharedData.Instance.headerData = headerData;
+                }
+                else
+                {
+                    // En caso de que se desborde
+                    MessageBox.Show("Se ha superado el limite de Alto (100.000 px)");
+                    textBox2.Text = headerData["Alto (Bitmap)"];
                 }
             }
-            SharedData.Instance.headerData = headerData;
-            // Se ajustan las dimensiones de la imagen
-            Bitmap bmp = new Bitmap(SharedData.Instance.imagePath, 
-                Convert.ToInt32(headerData["Ancho (Bitmap)"]), 
-                Convert.ToInt32(headerData["Alto (Bitmap)"]));
-            bmp = SharedData.Instance.imageData;
-            Console.WriteLine("Las nuevas dimensiones son: (" + headerData["Ancho (Bitmap)"] + ","
-                                + headerData["Alto (Bitmap)"] + ")");
-
+            catch (FormatException)
+            {
+                MessageBox.Show("Ingrese solo numeros!");
+                textBox2.Text = headerData["Alto (Bitmap)"];
+            }
+            
+            
         }
 
         private void TextBox3_TextChanged(object sender, EventArgs e)
         {
             //Se modifica la cabecera cuando se cambie este campo
             Dictionary<string, string> headerData = SharedData.Instance.headerData;
-            headerData["Ancho (Bitmap)"] = textBox3.Text;
-            textBox4.Text = "";
-            foreach (KeyValuePair<string, string> kvp in headerData)
+            try
             {
-                if (kvp.Key.Contains("(Bitmap)") && !kvp.Key.Contains("Resolución") && !kvp.Key.Contains("Formato"))
+                if (Convert.ToInt32(textBox3.Text) < 100000) // Tamaño maximo de 100.000 
                 {
-                    textBox4.Text += StringToHexString(kvp.Value);
+                    headerData["Ancho (Bitmap)"] = textBox3.Text;
+                    textBox4.Text = "";
+                    foreach (KeyValuePair<string, string> kvp in headerData)
+                    {
+                        if (kvp.Key.Contains("(Bitmap)") && !kvp.Key.Contains("Resolución") && !kvp.Key.Contains("Formato"))
+                        {
+                            textBox4.Text += StringToHexString(kvp.Value);
+                        }
+                    }
+                    Console.WriteLine("Las nuevas dimensiones son: (" + headerData["Ancho (Bitmap)"] + ","
+                                        + headerData["Alto (Bitmap)"] + ")");
+                    SharedData.Instance.headerData = headerData;
                 }
+                else
+                {
+                    // En caso de que se desborde
+                    MessageBox.Show("Se ha superado el limite de Ancho (100.000 px)");
+                    textBox3.Text = headerData["Ancho (Bitmap)"];
+                }
+
             }
-            SharedData.Instance.headerData = headerData;
-            // Se ajustan las dimensiones de la imagen
-            Bitmap bmp = new Bitmap(SharedData.Instance.imagePath,
-                Convert.ToInt32(headerData["Ancho (Bitmap)"]),
-                Convert.ToInt32(headerData["Alto (Bitmap)"]));
-            bmp = SharedData.Instance.imageData;
-            Console.WriteLine("Las nuevas dimensiones son: (" + headerData["Ancho (Bitmap)"] + ","
-                                + headerData["Alto (Bitmap)"] + ")"); 
+            catch (FormatException)
+            {
+                MessageBox.Show("Ingrese solo numeros!");
+                textBox3.Text = headerData["Ancho (Bitmap)"];
+            }
+            
         }
 
         private void Button7_Click(object sender, EventArgs e)
@@ -453,9 +480,15 @@ namespace App_with_image_processing
 
             bmp.RotateFlip(RotateFlipType.Rotate90FlipNone);
             pictureBox1.Image = bmp;
-            headerData["Alto (Bitmap)"] = bmp.Height.ToString();
+            // Con cada rotación de 90 ° el alto pasa a ser el ancho y el ancho pasa a ser el alto
+            string dummy = headerData["Alto (Bitmap)"];
+            headerData["Alto (Bitmap)"] = headerData["Ancho (Bitmap)"];
+            headerData["Ancho (Bitmap)"] = dummy;
+            // Guardar los cambios en las variables globales
+            SharedData.Instance.headerData = headerData;
+            SharedData.Instance.imageData = bmp;
+            // Se coloca al final por que un cambio en estos textbox llama a los correspondientes eventos
             textBox2.Text = headerData["Alto (Bitmap)"];
-            headerData["Ancho (Bitmap)"] = bmp.Width.ToString();
             textBox3.Text = headerData["Ancho (Bitmap)"];
         }
 
@@ -529,6 +562,8 @@ namespace App_with_image_processing
             Bitmap bmp = SharedData.Instance.imageData;
             bmp.RotateFlip(RotateFlipType.RotateNoneFlipX);
             pictureBox1.Image = bmp;
+            // Se guardan los cambios en la variable global 
+            SharedData.Instance.imageData = bmp;
         }
 
         private void Button8_Click(object sender, EventArgs e)
@@ -536,6 +571,8 @@ namespace App_with_image_processing
             Bitmap bmp = SharedData.Instance.imageData;
             bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
             pictureBox1.Image = bmp;
+            // Se guardan los cambios en la variable global 
+            SharedData.Instance.imageData = bmp;
         }
     }
 }
