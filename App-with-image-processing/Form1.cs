@@ -132,6 +132,7 @@ namespace App_with_image_processing
                         
                     }
                     PlaceFormat(headerData["Formato de Pixel (Bitmap)"]);
+                    SharedData.Instance.imageData = NormalizeInputBitmap(bmp);
                 }
             }
             catch (ArgumentException)
@@ -185,6 +186,10 @@ namespace App_with_image_processing
                 int intValue = Convert.ToInt32(text);
                 // convert intValue to a hex in a string variable
                 hexString = intValue.ToString("X2");
+                while (hexString.Length < 8)
+                {
+                    hexString = hexString.Insert(0, "0"); // Se agregan ceros hasta tener 8 caracteres
+                }
             }
             catch(FormatException)
             {
@@ -263,12 +268,15 @@ namespace App_with_image_processing
         {
             Dictionary<string, string> headerData = SharedData.Instance.headerData;
             Bitmap bmp = SharedData.Instance.imageData;
+            // Como variable de control se usa el formato de pixel, un ejemplo de esto seria cuando entra
+            // un formato bgr o Bgr pasa a ser Rgb, la expresión regular [RGBrgb](bg|gr|rg|br|rb)
+            // compara con cualquier formato 
             if (comboBox3.Text == "RGB")
             {
                 Bitmap newOrder = new PixelRGB().Transpose(bmp, headerData["Formato de Pixel (Bitmap)"]);
                 pictureBox1.Image = newOrder;
                 headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"],
-                                                            "(Rbg|Bgr|Brg|Gbr|Grb)", "Rgb");
+                                                            "[RGBrgb](bg|gr|rg|br|rb)", "Rgb");
                 Console.WriteLine("Formato de pixeles fijado en: " + headerData["Formato de Pixel (Bitmap)"]);
                 // Se guardan los cambios en la variable global
                 SharedData.Instance.imageData = newOrder;
@@ -279,8 +287,8 @@ namespace App_with_image_processing
             {
                 Bitmap newOrder = new PixelRBG().Transpose(bmp, headerData["Formato de Pixel (Bitmap)"]);
                 pictureBox1.Image = newOrder;
-                headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"], 
-                                                            "(Rgb|Bgr|Brg|Gbr|Grb)", "Rbg");
+                headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"],
+                                                            "[RGBrgb](gb|gr|rg|br|rb)", "Rbg");
                 Console.WriteLine("Formato de pixeles fijado en: " + headerData["Formato de Pixel (Bitmap)"]);
                 // Se guardan los cambios en la variable global
                 SharedData.Instance.imageData = newOrder;
@@ -291,7 +299,7 @@ namespace App_with_image_processing
                 Bitmap newOrder = new PixelBGR().Transpose(bmp, headerData["Formato de Pixel (Bitmap)"]);
                 pictureBox1.Image = newOrder;
                 headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"], 
-                                                            "(Rgb|Rbg|Brg|Gbr|Grb)", "Bgr");
+                                                            "[RGBrgb](gb|bg|rg|br|rb)", "Bgr");
                 Console.WriteLine("Formato de pixeles fijado en: " + headerData["Formato de Pixel (Bitmap)"]);
                 // Se guardan los cambios en la variable global
                 SharedData.Instance.imageData = newOrder;
@@ -301,8 +309,8 @@ namespace App_with_image_processing
             {
                 Bitmap newOrder = new PixelBRG().Transpose(bmp, headerData["Formato de Pixel (Bitmap)"]);
                 pictureBox1.Image = newOrder;
-                headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"], 
-                                                            "(Rgb|Rbg|Bgr|Gbr|Grb)", "Brg");
+                headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"],
+                                                            "[RGBrgb](gb|bg|gr|br|rb)", "Brg");
                 Console.WriteLine("Formato de pixeles fijado en: " + headerData["Formato de Pixel (Bitmap)"]);
                 // Se guardan los cambios en la variable global
                 SharedData.Instance.imageData = newOrder;
@@ -312,8 +320,8 @@ namespace App_with_image_processing
             {
                 Bitmap newOrder = new PixelGBR().Transpose(bmp, headerData["Formato de Pixel (Bitmap)"]);
                 pictureBox1.Image = newOrder;
-                headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"], 
-                                                            "(Rgb|Rbg|Bgr|Brg|Grb)", "Gbr");
+                headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"],
+                                                            "[RGBrgb](gb|bg|gr|rg|rb)", "Gbr");
                 Console.WriteLine("Formato de pixeles fijado en: " + headerData["Formato de Pixel (Bitmap)"]);
                 // Se guardan los cambios en la variable global
                 SharedData.Instance.imageData = newOrder;
@@ -323,8 +331,8 @@ namespace App_with_image_processing
             {
                 Bitmap newOrder = new PixelGRB().Transpose(bmp, headerData["Formato de Pixel (Bitmap)"]);
                 pictureBox1.Image = newOrder;
-                headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"], 
-                                                            "(Rgb|Rbg|Bgr|Brg|Gbr)", "Grb");
+                headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"],
+                                                            "[RGBrgb](gb|bg|gr|rg|br)", "Grb");
                 Console.WriteLine("Formato de pixeles fijado en: " + headerData["Formato de Pixel (Bitmap)"]);
                 // Se guardan los cambios en la variable global
                 SharedData.Instance.imageData = newOrder;
@@ -408,6 +416,9 @@ namespace App_with_image_processing
                 if (Convert.ToInt32(textBox2.Text) < 100000) // Tamaño maximo de 100.000 
                 {
                     headerData["Alto (Bitmap)"] = textBox2.Text;
+                    // Nuevo tamaño de imagen
+                    headerData["Tamaño de la imagen (Bitmap)"] = (Convert.ToInt32(headerData["Alto (Bitmap)"]) * 
+                                                                    Convert.ToInt32(headerData["Ancho (Bitmap)"])).ToString();
                     textBox4.Text = "";
                     foreach (KeyValuePair<string, string> kvp in headerData)
                     {
@@ -445,6 +456,9 @@ namespace App_with_image_processing
                 if (Convert.ToInt32(textBox3.Text) < 100000) // Tamaño maximo de 100.000 
                 {
                     headerData["Ancho (Bitmap)"] = textBox3.Text;
+                    // Nuevo tamaño de imagen
+                    headerData["Tamaño de la imagen (Bitmap)"] = (Convert.ToInt32(headerData["Alto (Bitmap)"]) *
+                                                                    Convert.ToInt32(headerData["Ancho (Bitmap)"])).ToString();
                     textBox4.Text = "";
                     foreach (KeyValuePair<string, string> kvp in headerData)
                     {
