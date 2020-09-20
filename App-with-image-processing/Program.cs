@@ -47,5 +47,8 @@ namespace App_with_image_processing
         public Dictionary<string, string> headerData { get; set; }
         public Bitmap imageData { get; set; }
         public Image imagePath { get; set; }
+        public byte[] headerToSend { get; set; }
+        public byte[] dataToSend { get; set; }
+
     }
 }

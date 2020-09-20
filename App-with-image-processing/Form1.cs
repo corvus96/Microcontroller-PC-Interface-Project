@@ -363,7 +363,42 @@ namespace App_with_image_processing
 
         private void Button6_Click(object sender, EventArgs e)
         {
+            Dictionary<string, string> headerData = SharedData.Instance.headerData;
+            byte[] headerToSend = SharedData.Instance.headerToSend;
+            // Para imprimir en consola
+            string arreglo = BitConverter.ToString(headerToSend);
+            // Se ajusta el tamaño del mapa de bits al tamaño seleccionado
+            Bitmap bmp = SharedData.Instance.imageData;
+            Bitmap newImage = new Bitmap(bmp, Convert.ToInt32(headerData["Ancho (Bitmap)"]),
+                                                        Convert.ToInt32(headerData["Alto (Bitmap)"]));
+            //Conversion a mapa de bits en 'data'
+            System.Drawing.Imaging.BitmapData imageData = newImage.LockBits(new Rectangle(0, 0, newImage.Width, newImage.Height),
+                                                        System.Drawing.Imaging.ImageLockMode.ReadWrite, newImage.PixelFormat);
+            // Tamaño del bitmap
+            int length = Math.Abs(imageData.Stride) * newImage.Height;
+            // Obtener la dirección de la primera linea
+            IntPtr ptr = imageData.Scan0;
+            byte[] rgbValues = new byte[length];
+            // Se copian los valores RGB en un array
+            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
+            // Copiamos los valores rgb de nuevo en el bitmap
+            System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
+            // Unlock the bits.
+            newImage.UnlockBits(imageData);
+            // Se pasan los valores rgb de bytes a string para imprimir en consola
+            string imagen1 = BitConverter.ToString(rgbValues).Replace("-", string.Empty);
+            int fullLength = headerToSend.Length + rgbValues.Length;
+            //-->byte[] fullString = new byte[fullLength];//
+            //Envío de la cabecera por el puerto serial
+            serialPort1.Write(headerToSend, 0, headerToSend.Length); // bytes 
 
+            //Envío de la imagen por el puerto serial
+            serialPort1.Write(rgbValues, 0, rgbValues.Length); // bytes 
+
+            Console.WriteLine("La imagen enviada fue:\n" + imagen1);
+            //Console.WriteLine("\nLongitud total de la trama es: {}", fullLength);
+            WriteLineInRichTextBox1("---> Se ha enviado la imagen", Color.Red);
+            Console.WriteLine("La cabecera enviada fue:" + arreglo);
         }
 
         private void ComboBox4_SelectedIndexChanged(object sender, EventArgs e)
@@ -541,7 +576,7 @@ namespace App_with_image_processing
 
         private void Button9_Click(object sender, EventArgs e)
         {
-
+            // Aqui se prepara la información para enviar y se activan los botones correspondientes
             string hex = textBox4.Text;
             int NumberChars = hex.Length;
             byte[] bytes1 = new byte[NumberChars / 2];
@@ -553,26 +588,8 @@ namespace App_with_image_processing
 
                 }
                 string arreglo = BitConverter.ToString(bytes1);
-
-                // Se toma el bitmap anteriormente creado, 
-                // para no crear una y otra vez bitmaps y compartir las modificaciones.
-                Bitmap bmp = SharedData.Instance.imageData;
-                //Conversion a mapa de bits en 'data'
-                System.Drawing.Imaging.BitmapData imageData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height),
-                                                            System.Drawing.Imaging.ImageLockMode.ReadWrite, bmp.PixelFormat);
-                // Tamaño del bitmap
-                int length = Math.Abs(imageData.Stride) * bmp.Height;
-                // Obtener la dirección de la primera linea
-                IntPtr ptr = imageData.Scan0;
-                byte[] rgbValues = new byte[length];
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                // Copiamos los valores rgb de nuevo en el bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-
-                // Unlock the bits.
-                bmp.UnlockBits(imageData);
-                pictureBox1.Image = bmp;
+                // Se guarda la cabecera en su forma de bytes en una variable global
+                SharedData.Instance.headerToSend = bytes1;
                 WriteLineInRichTextBox1("---> Se ha construido la imagen con la cabecera:", Color.Blue);
                 WriteLineInRichTextBox1(arreglo, Color.Blue);
                 // Se activa el boton de envio en caso de que se encuentre conectado
@@ -582,8 +599,7 @@ namespace App_with_image_processing
                 }
                 // Al crear la cabecera se habilita para guardar
                 button3.Enabled = true;
-                string imagen1 = BitConverter.ToString(rgbValues).Replace("-", string.Empty);
-                Console.WriteLine("La imagen enviada fue:\n" + imagen1);
+                
             }
             catch(ArgumentException)
             {
