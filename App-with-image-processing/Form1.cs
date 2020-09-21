@@ -132,7 +132,7 @@ namespace App_with_image_processing
                         
                     }
                     PlaceFormat(headerData["Formato de Pixel (Bitmap)"]);
-                    SharedData.Instance.imageData = NormalizeInputBitmap(bmp);
+                    //SharedData.Instance.imageData = NormalizeInputBitmap(bmp);
                 }
             }
             catch (ArgumentException)
@@ -359,6 +359,9 @@ namespace App_with_image_processing
                 SharedData.Instance.imageData = newOrder;
                 SharedData.Instance.headerData = headerData;
             }
+            // Se desactivan los botones de guardado y de envio
+            button6.Enabled = false;
+            button3.Enabled = false;
         }
 
         private void Button6_Click(object sender, EventArgs e)
@@ -371,11 +374,15 @@ namespace App_with_image_processing
             Bitmap bmp = SharedData.Instance.imageData;
             Bitmap newImage = new Bitmap(bmp, Convert.ToInt32(headerData["Ancho (Bitmap)"]),
                                                         Convert.ToInt32(headerData["Alto (Bitmap)"]));
+            // Se arreglan los canales intercambiados R -> B y B -> R
+            newImage = NormalizeInputBitmap(newImage);
             //Conversion a mapa de bits en 'data'
             System.Drawing.Imaging.BitmapData imageData = newImage.LockBits(new Rectangle(0, 0, newImage.Width, newImage.Height),
                                                         System.Drawing.Imaging.ImageLockMode.ReadWrite, newImage.PixelFormat);
             // Tamaño del bitmap
-            int length = Math.Abs(imageData.Stride) * newImage.Height;
+            Console.WriteLine(imageData.Stride);
+            //int length = Math.Abs(imageData.Stride) * newImage.Height;
+            int length = newImage.Width * newImage.Height;
             // Obtener la dirección de la primera linea
             IntPtr ptr = imageData.Scan0;
             byte[] rgbValues = new byte[length];
@@ -388,7 +395,7 @@ namespace App_with_image_processing
             // Se pasan los valores rgb de bytes a string para imprimir en consola
             string imagen1 = BitConverter.ToString(rgbValues).Replace("-", string.Empty);
             int fullLength = headerToSend.Length + rgbValues.Length;
-            //-->byte[] fullString = new byte[fullLength];//
+            WriteLineInRichTextBox1("---> Enviando...", Color.Blue);
             //Envío de la cabecera por el puerto serial
             serialPort1.Write(headerToSend, 0, headerToSend.Length); // bytes 
 
@@ -396,7 +403,10 @@ namespace App_with_image_processing
             serialPort1.Write(rgbValues, 0, rgbValues.Length); // bytes 
 
             Console.WriteLine("La imagen enviada fue:\n" + imagen1);
-            //Console.WriteLine("\nLongitud total de la trama es: {}", fullLength);
+            Console.WriteLine("\nLongitud total de la trama es: " + fullLength.ToString());
+            Console.WriteLine("Longitud de la cabecera enviada: " + headerToSend.Length.ToString());
+            Console.WriteLine("Longitud de los datos enviados: " + rgbValues.Length.ToString());
+            Console.WriteLine("Tamaño deseado: " + headerData["Tamaño de la imagen (Bitmap)"]);
             WriteLineInRichTextBox1("---> Se ha enviado la imagen", Color.Red);
             Console.WriteLine("La cabecera enviada fue:" + arreglo);
         }
@@ -496,8 +506,15 @@ namespace App_with_image_processing
             }
             catch (FormatException)
             {
-                MessageBox.Show("Ingrese solo numeros!");
-                textBox2.Text = headerData["Alto (Bitmap)"];
+                if(textBox2.Text == "")
+                {
+                    textBox2.Text = "";
+                }
+                else
+                {
+                    MessageBox.Show("Ingrese solo numeros");
+                    textBox2.Text = headerData["Alto (Bitmap)"];
+                }
             }
             
             
@@ -537,8 +554,15 @@ namespace App_with_image_processing
             }
             catch (FormatException)
             {
-                MessageBox.Show("Ingrese solo numeros!");
-                textBox3.Text = headerData["Ancho (Bitmap)"];
+                if (textBox3.Text == "")
+                {
+                    textBox3.Text = "";
+                }
+                else
+                {
+                    MessageBox.Show("Ingrese solo numeros");
+                    textBox3.Text = headerData["Ancho (Bitmap)"];
+                }
             }
             
         }
@@ -572,6 +596,9 @@ namespace App_with_image_processing
             {
                 button9.Enabled = false;
             }
+            // Se desactivan los botones de guardado y de envio
+            button6.Enabled = false;
+            button3.Enabled = false;
         }
 
         private void Button9_Click(object sender, EventArgs e)
@@ -621,6 +648,9 @@ namespace App_with_image_processing
             pictureBox1.Image = bmp;
             // Se guardan los cambios en la variable global 
             SharedData.Instance.imageData = bmp;
+            // Se desactivan los botones de guardado y de envio
+            button6.Enabled = false;
+            button3.Enabled = false;
         }
 
         private void Button8_Click(object sender, EventArgs e)
@@ -630,6 +660,9 @@ namespace App_with_image_processing
             pictureBox1.Image = bmp;
             // Se guardan los cambios en la variable global 
             SharedData.Instance.imageData = bmp;
+            // Se desactivan los botones de guardado y de envio
+            button6.Enabled = false;
+            button3.Enabled = false;
         }
     }
 }
