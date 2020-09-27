@@ -372,17 +372,17 @@ namespace App_with_image_processing
             string arreglo = BitConverter.ToString(headerToSend);
             // Se ajusta el tamaño del mapa de bits al tamaño seleccionado
             Bitmap bmp = SharedData.Instance.imageData;
-            Bitmap newImage = new Bitmap(bmp, Convert.ToInt32(headerData["Ancho (Bitmap)"]),
+            Image converted = (Image)bmp;
+            Bitmap newImage = new Bitmap(converted, Convert.ToInt32(headerData["Ancho (Bitmap)"]),
                                                         Convert.ToInt32(headerData["Alto (Bitmap)"]));
             // Se arreglan los canales intercambiados R -> B y B -> R
+            pictureBox1.Image = newImage;
             newImage = NormalizeInputBitmap(newImage);
             //Conversion a mapa de bits en 'data'
             System.Drawing.Imaging.BitmapData imageData = newImage.LockBits(new Rectangle(0, 0, newImage.Width, newImage.Height),
                                                         System.Drawing.Imaging.ImageLockMode.ReadWrite, newImage.PixelFormat);
-            // Tamaño del bitmap
-            Console.WriteLine(imageData.Stride);
-            //int length = Math.Abs(imageData.Stride) * newImage.Height;
-            int length = newImage.Width * newImage.Height;
+            int length = Math.Abs(imageData.Stride) * newImage.Height;
+            //----int length = newImage.Width * newImage.Height;
             // Obtener la dirección de la primera linea
             IntPtr ptr = imageData.Scan0;
             byte[] rgbValues = new byte[length];
