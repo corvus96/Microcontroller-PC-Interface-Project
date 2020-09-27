@@ -153,7 +153,7 @@ namespace ImageDataProcessing
     // la funcionalidad compartida entre las clases siguientes 
     public abstract class PixelOrderDecorator
     {
-        public abstract Bitmap Transpose(Bitmap image, string pxFormat);
+        public abstract Bitmap Transpose(string imageInput);
     }
 
     // Esta clase es un "componente concreto" de PixelOrderDecorator
@@ -161,117 +161,11 @@ namespace ImageDataProcessing
     {
         // La forma en la que lo hace es sobreescribiendo la funcionalidad
         // del metodo abstracto Transpose
-        public override Bitmap Transpose(Bitmap image, string pxFormat)
+        public override Bitmap Transpose(string imageInput)
         {
-            //Conversion a mapa de bits en 'data'
-            System.Drawing.Imaging.BitmapData imageData = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
-                                                        System.Drawing.Imaging.ImageLockMode.ReadWrite, image.PixelFormat);
-            // Tamaño del bitmap
-            int length = Math.Abs(imageData.Stride) * image.Height;
-            // Obtener la dirección de la primera linea
-            IntPtr ptr = imageData.Scan0;
-            byte[] rgbValues = new byte[length];
-            // Antes de transponer canales se debe comprobar que formato se posee actualmente
-            // Luego se aplica la estrategia adecuada
-            if (pxFormat.ToLower().Contains("rgb"))
-            {
-                // El formato no ha cambiado
-                image.UnlockBits(imageData);
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("rbg"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("bgr"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("brg"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("gbr"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("grb"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            // Retorna la misma imagen en caso de que no se encuentre entre los formatos disponibles
+            Bitmap image = new Bitmap(imageInput);
+           
+            // Retorna la misma imagen ya que por defecto la librería esta hecha para recibir imagenes en RGB
             return image;
         }
     } 
@@ -280,8 +174,9 @@ namespace ImageDataProcessing
     {
         // La forma en la que lo hace es sobreescribiendo la funcionalidad
         // del metodo abstracto Transpose
-        public override Bitmap Transpose(Bitmap image, string pxFormat)
+        public override Bitmap Transpose(string imageInput)
         {
+            Bitmap image = new Bitmap(imageInput);
             //Conversion a mapa de bits en 'data'
             System.Drawing.Imaging.BitmapData imageData = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
                                                         System.Drawing.Imaging.ImageLockMode.ReadWrite, image.PixelFormat);
@@ -290,106 +185,21 @@ namespace ImageDataProcessing
             // Obtener la dirección de la primera linea
             IntPtr ptr = imageData.Scan0;
             byte[] rgbValues = new byte[length];
-            // Antes de transponer canales se debe comprobar que formato se posee actualmente
-            // Luego se aplica la estrategia adecuada
-            if (pxFormat.ToLower().Contains("rgb"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
+            
+            // Se copian los valores RGB en un array
+            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
                   
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("rbg"))
+            for (int counter = 0; counter < rgbValues.Length; counter += 3)
             {
-                image.UnlockBits(imageData);
-                return image;
+                byte dummy = rgbValues[counter];
+                rgbValues[counter] = rgbValues[counter + 1];
+                rgbValues[counter + 1] = dummy;
             }
-            else if (pxFormat.ToLower().Contains("bgr"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
+            // Se copian los valores del devuelta al bitmap
+            System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
+            // Se desbloquean los bits
+            image.UnlockBits(imageData);
 
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("brg"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("gbr"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("grb"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            // Retorna la misma imagen en caso de que no se encuentre entre los formatos disponibles
             return image;
         }
     } 
@@ -398,8 +208,9 @@ namespace ImageDataProcessing
     {
         // La forma en la que lo hace es sobreescribiendo la funcionalidad
         // del metodo abstracto Transpose
-        public override Bitmap Transpose(Bitmap image, string pxFormat)
+        public override Bitmap Transpose(string imageInput)
         {
+            Bitmap image = new Bitmap(imageInput);
             //Conversion a mapa de bits en 'data'
             System.Drawing.Imaging.BitmapData imageData = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
                                                         System.Drawing.Imaging.ImageLockMode.ReadWrite, image.PixelFormat);
@@ -408,106 +219,20 @@ namespace ImageDataProcessing
             // Obtener la dirección de la primera linea
             IntPtr ptr = imageData.Scan0;
             byte[] rgbValues = new byte[length];
-            // Antes de transponer canales se debe comprobar que formato se posee actualmente
-            // Luego se aplica la estrategia adecuada
-            if (pxFormat.ToLower().Contains("rgb"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
+            // Se copian los valores RGB en un array
+            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
                   
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("rbg"))
+            for (int counter = 0; counter < rgbValues.Length; counter += 3)
             {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
+                byte dummy = rgbValues[counter];
+                rgbValues[counter] = rgbValues[counter + 2];
+                rgbValues[counter + 2] = dummy;
+            }
+            // Se copian los valores del devuelta al bitmap
+            System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
+            // Se desbloquean los bits
+            image.UnlockBits(imageData);
 
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("bgr"))
-            {
-                image.UnlockBits(imageData);
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("brg"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("gbr"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("grb"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            // Retorna la misma imagen en caso de que no se encuentre entre los formatos disponibles
             return image;
         }
     } 
@@ -516,8 +241,9 @@ namespace ImageDataProcessing
     {
         // La forma en la que lo hace es sobreescribiendo la funcionalidad
         // del metodo abstracto Transpose
-        public override Bitmap Transpose(Bitmap image, string pxFormat)
+        public override Bitmap Transpose(string imageInput)
         {
+            Bitmap image = new Bitmap(imageInput);
             //Conversion a mapa de bits en 'data'
             System.Drawing.Imaging.BitmapData imageData = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
                                                         System.Drawing.Imaging.ImageLockMode.ReadWrite, image.PixelFormat);
@@ -526,106 +252,21 @@ namespace ImageDataProcessing
             // Obtener la dirección de la primera linea
             IntPtr ptr = imageData.Scan0;
             byte[] rgbValues = new byte[length];
-            // Antes de transponer canales se debe comprobar que formato se posee actualmente
-            // Luego se aplica la estrategia adecuada
-            if (pxFormat.ToLower().Contains("rgb"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
+            // Se copian los valores RGB en un array
+            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
 
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("rbg"))
+            for (int counter = 0; counter < rgbValues.Length; counter += 3)
             {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
+                byte dummy = rgbValues[counter];
+                rgbValues[counter] = rgbValues[counter + 1];
+                rgbValues[counter + 1] = rgbValues[counter + 2];
+                rgbValues[counter + 2] = dummy;
+            }
+            // Se copian los valores del devuelta al bitmap
+            System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
+            // Se desbloquean los bits
+            image.UnlockBits(imageData);
 
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("bgr"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("brg"))
-            {
-                image.UnlockBits(imageData);
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("gbr"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("grb"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            // Retorna la misma imagen en caso de que no se encuentre entre los formatos disponibles
             return image;
         }
     } 
@@ -634,8 +275,9 @@ namespace ImageDataProcessing
     {
         // La forma en la que lo hace es sobreescribiendo la funcionalidad
         // del metodo abstracto Transpose
-        public override Bitmap Transpose(Bitmap image, string pxFormat)
+        public override Bitmap Transpose(string imageInput)
         {
+            Bitmap image = new Bitmap(imageInput);
             //Conversion a mapa de bits en 'data'
             System.Drawing.Imaging.BitmapData imageData = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
                                                         System.Drawing.Imaging.ImageLockMode.ReadWrite, image.PixelFormat);
@@ -646,104 +288,21 @@ namespace ImageDataProcessing
             byte[] rgbValues = new byte[length];
             // Antes de transponer canales se debe comprobar que formato se posee actualmente
             // Luego se aplica la estrategia adecuada
-            if (pxFormat.ToLower().Contains("rgb"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
+            // Se copian los valores RGB en un array
+            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
 
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("rbg"))
+            for (int counter = 0; counter < rgbValues.Length; counter += 3)
             {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
+                byte dummy = rgbValues[counter];
+                rgbValues[counter] = rgbValues[counter + 2];
+                rgbValues[counter + 2] = rgbValues[counter + 1];
+                rgbValues[counter + 1] = dummy;
+            }
+            // Se copian los valores del devuelta al bitmap
+            System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
+            // Se desbloquean los bits
+            image.UnlockBits(imageData);
 
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("bgr"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("brg"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("gbr"))
-            {
-                image.UnlockBits(imageData);
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("grb"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            // Retorna la misma imagen en caso de que no se encuentre entre los formatos disponibles
             return image;
         }
     } 
@@ -752,8 +311,9 @@ namespace ImageDataProcessing
     {
         // La forma en la que lo hace es sobreescribiendo la funcionalidad
         // del metodo abstracto Transpose
-        public override Bitmap Transpose(Bitmap image, string pxFormat)
+        public override Bitmap Transpose(string imageInput)
         {
+            Bitmap image = new Bitmap(imageInput);
             //Conversion a mapa de bits en 'data'
             System.Drawing.Imaging.BitmapData imageData = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
                                                         System.Drawing.Imaging.ImageLockMode.ReadWrite, image.PixelFormat);
@@ -762,106 +322,20 @@ namespace ImageDataProcessing
             // Obtener la dirección de la primera linea
             IntPtr ptr = imageData.Scan0;
             byte[] rgbValues = new byte[length];
-            // Antes de transponer canales se debe comprobar que formato se posee actualmente
-            // Luego se aplica la estrategia adecuada
-            if (pxFormat.ToLower().Contains("rgb"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
+            // Se copian los valores RGB en un array
+            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
 
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("rbg"))
+            for (int counter = 0; counter < rgbValues.Length; counter += 3)
             {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
+                byte dummy = rgbValues[counter + 1];
+                rgbValues[counter + 1] = rgbValues[counter + 2];
+                rgbValues[counter + 2] = dummy;
+            }
+            // Se copian los valores del devuelta al bitmap
+            System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
+            // Se desbloquean los bits
+            image.UnlockBits(imageData);
 
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("bgr"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("brg"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter];
-                    rgbValues[counter] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("gbr"))
-            {
-                // Se copian los valores RGB en un array
-                System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, length);
-                  
-                for (int counter = 0; counter < rgbValues.Length; counter += 3)
-                {
-                    byte dummy = rgbValues[counter + 1];
-                    rgbValues[counter + 1] = rgbValues[counter + 2];
-                    rgbValues[counter + 2] = dummy;
-                }
-                // Se copian los valores del devuelta al bitmap
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, length);
-                // Se desbloquean los bits
-                image.UnlockBits(imageData);
-
-                return image;
-            }
-            else if (pxFormat.ToLower().Contains("grb"))
-            {
-                image.UnlockBits(imageData);
-                return image;
-            }
-            // Retorna la misma imagen en caso de que no se encuentre entre los formatos disponibles
             return image;
         }
     }

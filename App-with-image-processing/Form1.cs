@@ -94,8 +94,7 @@ namespace App_with_image_processing
                     // Se guardan los datos de la imagen en una variable global para utilizarse en otra clase o evento
                     Bitmap bmp = new Bitmap(imagen);
                     SharedData.Instance.imageData = bmp;
-                    Image image = Image.FromFile(imagen);
-                    SharedData.Instance.imagePath = image;
+                    SharedData.Instance.imagePath = imagen;
                     // Se imprime en consola la data extraida
                     Console.WriteLine("Metadatos de la imagen elegida");
                     foreach (KeyValuePair<string, string> kvp in headerData)
@@ -288,13 +287,14 @@ namespace App_with_image_processing
         private void ComboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
             Dictionary<string, string> headerData = SharedData.Instance.headerData;
-            Bitmap bmp = SharedData.Instance.imageData;
-            // Como variable de control se usa el formato de pixel, un ejemplo de esto seria cuando entra
-            // un formato bgr o Bgr pasa a ser Rgb, la expresión regular [RGBrgb](bg|gr|rg|br|rb)
-            // compara con cualquier formato 
+            string image = SharedData.Instance.imagePath;
+            // Cuando se hace una transposición las rotaciones o flips se pierden, esto con el fin de 
+            // simplificar los metodos PixelXXX().Transpose() del dll, de igual forma si se quieren 
+            // realizar rotaciones o flips se pueden hacer posterior a la elección del formato
+            // Cada imagen ingresada a pesar de ser RGB al convertirlo en un bitmap son pasadas a BGR
             if (comboBox3.Text == "RGB")
             {
-                Bitmap newOrder = new PixelRGB().Transpose(bmp, headerData["Formato de Pixel (Bitmap)"]);
+                Bitmap newOrder = new PixelRGB().Transpose(image);
                 pictureBox1.Image = newOrder;
                 headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"],
                                                             "[RGBrgb](bg|gr|rg|br|rb)", "Rgb");
@@ -306,7 +306,7 @@ namespace App_with_image_processing
             }
             else if (comboBox3.Text == "RBG")
             {
-                Bitmap newOrder = new PixelRBG().Transpose(bmp, headerData["Formato de Pixel (Bitmap)"]);
+                Bitmap newOrder = new PixelRBG().Transpose(image);
                 pictureBox1.Image = newOrder;
                 headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"],
                                                             "[RGBrgb](gb|gr|rg|br|rb)", "Rbg");
@@ -317,7 +317,7 @@ namespace App_with_image_processing
             }
             else if (comboBox3.Text == "BGR")
             {
-                Bitmap newOrder = new PixelBGR().Transpose(bmp, headerData["Formato de Pixel (Bitmap)"]);
+                Bitmap newOrder = new PixelBGR().Transpose(image);
                 pictureBox1.Image = newOrder;
                 headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"], 
                                                             "[RGBrgb](gb|bg|rg|br|rb)", "Bgr");
@@ -328,7 +328,7 @@ namespace App_with_image_processing
             }
             else if (comboBox3.Text == "BRG")
             {
-                Bitmap newOrder = new PixelBRG().Transpose(bmp, headerData["Formato de Pixel (Bitmap)"]);
+                Bitmap newOrder = new PixelBRG().Transpose(image);
                 pictureBox1.Image = newOrder;
                 headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"],
                                                             "[RGBrgb](gb|bg|gr|br|rb)", "Brg");
@@ -339,7 +339,7 @@ namespace App_with_image_processing
             }
             else if (comboBox3.Text == "GBR")
             {
-                Bitmap newOrder = new PixelGBR().Transpose(bmp, headerData["Formato de Pixel (Bitmap)"]);
+                Bitmap newOrder = new PixelGBR().Transpose(image);
                 pictureBox1.Image = newOrder;
                 headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"],
                                                             "[RGBrgb](gb|bg|gr|rg|rb)", "Gbr");
@@ -350,7 +350,7 @@ namespace App_with_image_processing
             }
             else if (comboBox3.Text == "GRB")
             {
-                Bitmap newOrder = new PixelGRB().Transpose(bmp, headerData["Formato de Pixel (Bitmap)"]);
+                Bitmap newOrder = new PixelGRB().Transpose(image);
                 pictureBox1.Image = newOrder;
                 headerData["Formato de Pixel (Bitmap)"] = Regex.Replace(headerData["Formato de Pixel (Bitmap)"],
                                                             "[RGBrgb](gb|bg|gr|rg|br)", "Grb");
