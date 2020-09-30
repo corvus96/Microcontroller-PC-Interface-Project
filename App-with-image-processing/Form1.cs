@@ -268,6 +268,7 @@ namespace App_with_image_processing
                     newImage.Save(dialog.FileName);
                 }
                 WriteLineInRichTextBox1("---> Se ha guardado la imagen en: " + dialog.FileName, Color.Blue);
+                
             }
             catch (ArgumentNullException)
             {
@@ -369,13 +370,16 @@ namespace App_with_image_processing
         private void Button6_Click(object sender, EventArgs e)
         {
             Dictionary<string, string> headerData = SharedData.Instance.headerData;
-            string pathImage = SharedData.Instance.imagePath;
             byte[] headerToSend = SharedData.Instance.headerToSend;
             // Para imprimir en consola
             string arreglo = BitConverter.ToString(headerToSend);
             // Se ajusta el tamaño del mapa de bits al tamaño seleccionado
             Bitmap bmp = SharedData.Instance.imageData;
             Image convertedImage = (Image)bmp;
+            // Se guarda una copia
+            var cloneVar = convertedImage.Clone();
+            Bitmap cloneBmp = (Bitmap)cloneVar;
+            SharedData.Instance.imageData = (Bitmap)cloneBmp;
             Bitmap newImage = imageResize(bmp, Convert.ToInt32(headerData["Ancho (Bitmap)"]), 
                                     Convert.ToInt32(headerData["Alto (Bitmap)"]), convertedImage);
             // Se arreglan los canales intercambiados R -> B y B -> R
@@ -414,18 +418,17 @@ namespace App_with_image_processing
             Console.WriteLine("Longitud deseada: " + longImagen);
             WriteLineInRichTextBox1("---> Se ha enviado la imagen", Color.Red);
             Console.WriteLine("La cabecera enviada fue:" + arreglo);
-            pictureBox1.Image = newImage;
+            // Se libera la memoria de newImage
+            bmp.Dispose();
         }
 
         public static Bitmap imageResize(Bitmap bitMap, int width, int height, Image image)
         {
-            Dictionary<string, string> headerData = SharedData.Instance.headerData;
-
+            
             // Se recupera la data del objeto bitMap
             BitmapData bmpData = bitMap.LockBits(new Rectangle(0, 0, bitMap.Width, bitMap.Height),
-                        ImageLockMode.ReadOnly, bitMap.PixelFormat);
+                                                   ImageLockMode.ReadOnly, bitMap.PixelFormat);
             var destRect = new Rectangle(0, 0, width, height);
-            //var newBitmap = new Bitmap(width, height);
             //Se crea un nuevo bitmap.
             Bitmap newBitmap = new Bitmap(width, height, bmpData.Stride, bitMap.PixelFormat, bmpData.Scan0);
 
