@@ -375,10 +375,9 @@ namespace App_with_image_processing
             string arreglo = BitConverter.ToString(headerToSend);
             // Se ajusta el tamaño del mapa de bits al tamaño seleccionado
             Bitmap bmp = SharedData.Instance.imageData;
+            Image convertedImage = (Image)bmp;
             Bitmap newImage = imageResize(bmp, Convert.ToInt32(headerData["Ancho (Bitmap)"]), 
-                                    Convert.ToInt32(headerData["Alto (Bitmap)"]));
-            //----Bitmap newImage = new Bitmap(converted, Convert.ToInt32(headerData["Ancho (Bitmap)"]),
-            //----                                           Convert.ToInt32(headerData["Alto (Bitmap)"]));
+                                    Convert.ToInt32(headerData["Alto (Bitmap)"]), convertedImage);
             // Se arreglan los canales intercambiados R -> B y B -> R
             newImage = NormalizeInputBitmap(newImage);
             //Conversion a mapa de bits en 'data'
@@ -418,18 +417,37 @@ namespace App_with_image_processing
             pictureBox1.Image = newImage;
         }
 
-        public static Bitmap imageResize(Bitmap bitMap, int width, int heigth)
+        public static Bitmap imageResize(Bitmap bitMap, int width, int height, Image image)
         {
+            Dictionary<string, string> headerData = SharedData.Instance.headerData;
+
             // Se recupera la data del objeto bitMap
             BitmapData bmpData = bitMap.LockBits(new Rectangle(0, 0, bitMap.Width, bitMap.Height),
-                ImageLockMode.ReadOnly, bitMap.PixelFormat);
-
-            //Create a new bitmap.
-            Bitmap newBitmap = new Bitmap(width, heigth, bmpData.Stride, bitMap.PixelFormat, bmpData.Scan0);
+                        ImageLockMode.ReadOnly, bitMap.PixelFormat);
+            var destRect = new Rectangle(0, 0, width, height);
+            //var newBitmap = new Bitmap(width, height);
+            //Se crea un nuevo bitmap.
+            Bitmap newBitmap = new Bitmap(width, height, bmpData.Stride, bitMap.PixelFormat, bmpData.Scan0);
 
             bitMap.UnlockBits(bmpData);
 
-            return newBitmap;
+            newBitmap.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(newBitmap))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+                return newBitmap;
+            }
         }
 
         private void ComboBox4_SelectedIndexChanged(object sender, EventArgs e)
