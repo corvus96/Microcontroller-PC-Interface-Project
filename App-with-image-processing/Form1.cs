@@ -11,6 +11,8 @@ using System.IO;
 using ImageDataProcessing;
 using System.IO.Ports;
 using System.Text.RegularExpressions;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 
 namespace App_with_image_processing
 {
@@ -147,8 +149,8 @@ namespace App_with_image_processing
         {
             // Esta función es necesaria debido a que los bitmaps modifican el RGB a BGR
             //Conversion a mapa de bits en 'data'
-            System.Drawing.Imaging.BitmapData imageData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height),
-                                                        System.Drawing.Imaging.ImageLockMode.ReadWrite, bmp.PixelFormat);
+            BitmapData imageData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height),
+                                                            ImageLockMode.ReadWrite, bmp.PixelFormat);
             // Tamaño del bitmap
             int length = Math.Abs(imageData.Stride) * bmp.Height;
             // Obtener la dirección de la primera linea
@@ -367,20 +369,21 @@ namespace App_with_image_processing
         private void Button6_Click(object sender, EventArgs e)
         {
             Dictionary<string, string> headerData = SharedData.Instance.headerData;
+            string pathImage = SharedData.Instance.imagePath;
             byte[] headerToSend = SharedData.Instance.headerToSend;
             // Para imprimir en consola
             string arreglo = BitConverter.ToString(headerToSend);
             // Se ajusta el tamaño del mapa de bits al tamaño seleccionado
             Bitmap bmp = SharedData.Instance.imageData;
-            Image converted = (Image)bmp;
-            Bitmap newImage = new Bitmap(converted, Convert.ToInt32(headerData["Ancho (Bitmap)"]),
-                                                        Convert.ToInt32(headerData["Alto (Bitmap)"]));
+            Bitmap newImage = imageResize(bmp, Convert.ToInt32(headerData["Ancho (Bitmap)"]), 
+                                    Convert.ToInt32(headerData["Alto (Bitmap)"]));
+            //----Bitmap newImage = new Bitmap(converted, Convert.ToInt32(headerData["Ancho (Bitmap)"]),
+            //----                                           Convert.ToInt32(headerData["Alto (Bitmap)"]));
             // Se arreglan los canales intercambiados R -> B y B -> R
-            pictureBox1.Image = newImage;
             newImage = NormalizeInputBitmap(newImage);
             //Conversion a mapa de bits en 'data'
-            System.Drawing.Imaging.BitmapData imageData = newImage.LockBits(new Rectangle(0, 0, newImage.Width, newImage.Height),
-                                                        System.Drawing.Imaging.ImageLockMode.ReadWrite, newImage.PixelFormat);
+            BitmapData imageData = newImage.LockBits(new Rectangle(0, 0, newImage.Width, newImage.Height),
+                                                            ImageLockMode.ReadWrite, newImage.PixelFormat);
             int length = Math.Abs(imageData.Stride) * newImage.Height;
             //----int length = newImage.Width * newImage.Height;
             // Obtener la dirección de la primera linea
@@ -402,13 +405,31 @@ namespace App_with_image_processing
             //Envío de la imagen por el puerto serial
             serialPort1.Write(rgbValues, 0, rgbValues.Length); // bytes 
 
+            // Para obtener la longitud de trama se multiplica por 3 debido a que cada pixel contiene 3 bytes
+            string longImagen = (Convert.ToInt32(headerData["Tamaño de la imagen (Bitmap)"]) * 3).ToString();
+
             Console.WriteLine("La imagen enviada fue:\n" + imagen1);
             Console.WriteLine("\nLongitud total de la trama es: " + fullLength.ToString());
             Console.WriteLine("Longitud de la cabecera enviada: " + headerToSend.Length.ToString());
             Console.WriteLine("Longitud de los datos enviados: " + rgbValues.Length.ToString());
-            Console.WriteLine("Tamaño deseado: " + headerData["Tamaño de la imagen (Bitmap)"]);
+            Console.WriteLine("Longitud deseada: " + longImagen);
             WriteLineInRichTextBox1("---> Se ha enviado la imagen", Color.Red);
             Console.WriteLine("La cabecera enviada fue:" + arreglo);
+            pictureBox1.Image = newImage;
+        }
+
+        public static Bitmap imageResize(Bitmap bitMap, int width, int heigth)
+        {
+            // Se recupera la data del objeto bitMap
+            BitmapData bmpData = bitMap.LockBits(new Rectangle(0, 0, bitMap.Width, bitMap.Height),
+                ImageLockMode.ReadOnly, bitMap.PixelFormat);
+
+            //Create a new bitmap.
+            Bitmap newBitmap = new Bitmap(width, heigth, bmpData.Stride, bitMap.PixelFormat, bmpData.Scan0);
+
+            bitMap.UnlockBits(bmpData);
+
+            return newBitmap;
         }
 
         private void ComboBox4_SelectedIndexChanged(object sender, EventArgs e)
