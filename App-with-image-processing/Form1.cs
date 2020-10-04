@@ -115,7 +115,6 @@ namespace App_with_image_processing
                     textBox2.Text = headerData["Alto (Bitmap)"];
 
                     textBox4.Enabled = true;
-                    button1.Enabled = true;
                     button7.Enabled = true;
                     button8.Enabled = true;
                     button10.Enabled = true;
@@ -371,8 +370,6 @@ namespace App_with_image_processing
         {
             Dictionary<string, string> headerData = SharedData.Instance.headerData;
             byte[] headerToSend = SharedData.Instance.headerToSend;
-            // Para imprimir en consola
-            string arreglo = BitConverter.ToString(headerToSend);
             // Se ajusta el tamaño del mapa de bits al tamaño seleccionado
             Bitmap bmp = SharedData.Instance.imageData;
             Image convertedImage = (Image)bmp;
@@ -401,6 +398,8 @@ namespace App_with_image_processing
             // Se pasan los valores rgb de bytes a string para imprimir en consola
             string imagen1 = BitConverter.ToString(rgbValues).Replace("-", string.Empty);
             int fullLength = headerToSend.Length + rgbValues.Length;
+            // Para imprimir en consola
+            string arreglo = BitConverter.ToString(headerToSend);
             WriteLineInRichTextBox1("---> Enviando...", Color.Blue);
             //Envío de la cabecera por el puerto serial
             serialPort1.Write(headerToSend, 0, headerToSend.Length); // bytes 
