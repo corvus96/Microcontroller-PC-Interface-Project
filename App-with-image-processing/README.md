@@ -75,7 +75,38 @@ A continuación se presenta una breve descripción del comportamiento de cada me
 
 ## 3. Interfaz 
 A continuación se muestran algunas imagenes que muestran la interfaz de usuario diseñada
+![alt text](https://github.com/corvus96/Microcontrollers-projects/blob/master/App-with-image-processing/Interfaz1.jpg "UI")
+
+**Interfaz de usuario**
+
+![alt text](https://github.com/corvus96/Microcontrollers-projects/blob/master/App-with-image-processing/Transpose.jpg "Transpose")
+
+**Transposición de canales**
+
+![alt text](https://github.com/corvus96/Microcontrollers-projects/blob/master/App-with-image-processing/flipY.jpg "flipY")
+
+**Flip en Y**
+
+![alt text](https://github.com/corvus96/Microcontrollers-projects/blob/master/App-with-image-processing/Seleccionar_Puerta.jpg "selección de puertos")
+
+**Seleccionar puerto**
+
+![alt text](https://github.com/corvus96/Microcontrollers-projects/blob/master/App-with-image-processing/Seleccionar_Baud.jpg "Selección de baud rate")
+
+**Selección de baud rate**
+
+![alt text](https://github.com/corvus96/Microcontrollers-projects/blob/master/App-with-image-processing/headerBMP.jpg "headerBMP")
+
+**Header extraido de BMP**
+
+![alt text](https://github.com/corvus96/Microcontrollers-projects/blob/master/App-with-image-processing/Rotacion.jpg "Rotacion")
+
+**Rotación de imágenes**
+
 ## 4. Trama Enviada 
 La aplicación a medida que se alteran las dimensiones actualizara la cabecera e enviar, aunque por defecto la trama tendra siguiente estructura:
-
+![alt text](https://github.com/corvus96/Microcontrollers-projects/blob/master/App-with-image-processing/Estructura%20de%20Trama.png "Estructura de Trama")
 Sin embargo es posible ingresar valores en hexadecimales para el envio, de forma que la cabecera sea personalizada por el usuario
+
+## 5. Importante
+Se recomienda emplear imagenes en RGB24 con formato BMP
